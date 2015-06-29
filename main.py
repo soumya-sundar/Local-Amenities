@@ -18,34 +18,31 @@ jinja_environment = jinja2.Environment(autoescape=True,
 #Render the main page of the application
 class MainPage(webapp2.RequestHandler):
     def get(self):
-
         current_user = users.get_current_user()
         if current_user:
-
             url = users.create_logout_url(self.request.uri)
             url_text = 'Logout'
         else:
-
             url = users.create_login_url(self.request.uri)
             url_text = 'Login'
 
         template_values = {
             'url': url,
-            'url_text': url_text,
+            'url_text': url_text
         }
         # deal with static files
         template = jinja_environment.get_template('index.html')
         self.response.write(template.render(template_values))
-
 		
 #Render new search page
 class NewSearch(webapp2.RequestHandler):
-    @login_required
-    def get(self):
-        current_user = users.get_current_user().nickname()
-        template_values = {'user_nickname': current_user}
-        template = jinja_environment.get_template('search.html')
-        self.response.write(template.render(template_values))
+	@login_required
+	def get(self):
+		current_user = users.get_current_user().nickname()
+		url = users.create_logout_url(self.request.uri)
+		template_values = {'user_nickname': current_user, 'url': url}
+		template = jinja_environment.get_template('search.html')
+		self.response.write(template.render(template_values))
 
 #Handles application routes
 app = webapp2.WSGIApplication([

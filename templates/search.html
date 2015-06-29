@@ -22,6 +22,9 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/styles/css/search.css" type="text/css">
+	
+	<!-- Leaflet CSS -->
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />	
 </head>
 
 <body id="page-top">
@@ -47,10 +50,13 @@
 					<button type="submit" class="btn btn-default">Submit</button>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
+					<li><a href="/">Back to main page</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" value="{{ user_nickname }}" > Hello {{user_nickname}} !<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="/">Logout</a></li>
+							<li>
+								<a class="btn btn-primary" href="{{ url|safe }}" ><i class="fa fa-user fa-fw"></i> Log out </a> 
+							</li>
 						</ul>
 					</li>
 				</ul>
@@ -58,6 +64,10 @@
 		</div><!-- /.container-fluid -->
 	</nav>
 
+    <section class="bg-primary-search" id="mapSection">
+		<div class = "mapContainer" id="map"></div>
+    </section>
+	
     <!-- jQuery -->
     <script src="/js/jquery.js"></script>
 
@@ -65,6 +75,8 @@
     <script src="/js/bootstrap.min.js"></script>
 
     <!-- Plugin JavaScript -->
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+	<script src="/js/map.js"></script>
     <script src="/js/jquery.easing.min.js"></script>
     <script src="/js/jquery.fittext.js"></script>
     <script src="/js/wow.min.js"></script>
