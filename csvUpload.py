@@ -31,13 +31,40 @@ class MainPage(webapp2.RequestHandler):
                         + os.environ['CURRENT_VERSION_ID'] + '\n')
 		self.response.write('Using bucket name: ' + bucket_name + '\n\n')
 		bucket = '/' + bucket_name
-		filename = bucket + '/School2.csv'
+		filename = bucket + '/Outcodes.csv'
+		filename2 = bucket + '/Postcodes.csv'
+		filename3 = bucket + '/Postcodes2.csv'
+		filename4 = bucket + '/Postcodes3.csv'
+		filename5 = bucket + '/Postcodes4.csv'
+		filename6 = bucket + '/GP.csv'
+		filename7 = bucket + '/School.csv'
+		filename8 = bucket + '/School2.csv'
+		filename9 = bucket + '/Supermarket.csv'
+		filename10 = bucket + '/Trainstation.csv'
 		self.tmp_filenames_to_clean_up = []
 		
 		try:
-			self.create_file(filename)
+			self.create_file(filename, 'Outcodes.csv')
 			self.response.write('\n\n')
-			self.read_file(filename)
+			self.create_file(filename2, 'Postcodes.csv')
+			self.response.write('\n\n')
+			self.create_file(filename3, 'Postcodes2.csv')
+			self.response.write('\n\n')			
+			self.create_file(filename4, 'Postcodes3.csv')
+			self.response.write('\n\n')	
+			self.create_file(filename5, 'Postcodes4.csv')
+			self.response.write('\n\n')
+			self.create_file(filename6, 'GP.csv')
+			self.response.write('\n\n')
+			self.create_file(filename7, 'School.csv')
+			self.response.write('\n\n')
+			self.create_file(filename8, 'School2.csv')
+			self.response.write('\n\n')
+			self.create_file(filename9, 'Supermarket.csv')
+			self.response.write('\n\n')
+			self.create_file(filename10, 'TrainStation.csv')
+			self.response.write('\n\n')
+			self.read_file(filename10)
 			self.response.write('\n\n')
 
 		except Exception, e:  # pylint: disable=broad-except
@@ -48,14 +75,14 @@ class MainPage(webapp2.RequestHandler):
 # When writing a file to Cloud Storage, you should not call finally:close() as
 # this can result in finalizing object uploads even if there was an exception
 # during a write.
-	def create_file(self, filename):
+	def create_file(self, filename, local_file):
 		self.response.write('Creating file %s\n' % filename)
 		write_retry_params = gcs.RetryParams(backoff_factor=1.1)
 		gcs_file = gcs.open(filename,
 							'w',
 							content_type='text/csv',
 							retry_params=write_retry_params)
-		f=open('School2.csv')
+		f=open(local_file)
 		reader=csv.reader(f)
 		writer = csv.writer(gcs_file)
 		for row in reader:        

@@ -23,5 +23,23 @@
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
     font-weight: 700;
 }
+.mapDiv{
+  color: #000000;
+  background-color: #fff;
+}
+
+.testDiv{
+  color: #000000;
+  background-color: #fff;
+}
 .mapContainer { height: 360px; }
 
+.show {
+  display: block !important;
+}
+.hidden {
+  display: none !important;
+}
+.invisible {
+  visibility: hidden;
+}

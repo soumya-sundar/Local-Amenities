@@ -17,14 +17,15 @@
     <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="/styles/font-awesome/css/font-awesome.min.css" type="text/css">
 
-    <!-- Plugin CSS -->
-    <link rel="stylesheet" href="/styles/css/animate.min.css" type="text/css">
-
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/styles/css/search.css" type="text/css">
 	
 	<!-- Leaflet CSS -->
-	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />	
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+
+	<!-- JQuery UI CSS -->
+	<link rel="stylesheet" href="/js/jquery-ui-1.11.4/jquery-ui.css" type="text/css">
+	<link rel="stylesheet" href="/js/jquery-ui-1.11.4/jquery-ui.min.css" type="text/css">
 </head>
 
 <body id="page-top">
@@ -43,11 +44,12 @@
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<form class="navbar-form navbar-left" role="search">
-					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Search Postcode">
+				<form class="navbar-form navbar-left" role="search" >
+					<div class="form-group" id="div">
+						<input type="text" class="form-control" placeholder="Search Postcode" id="postcode"  data-toggle="popover" data-placement="bottom" 
+						 data-content="Please enter a valid postcode.">
 					</div>
-					<button type="submit" class="btn btn-default">Submit</button>
+					<button type="submit" id ="submitButton" class="btn btn-default">Submit</button>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="/">Back to main page</a></li>
@@ -64,25 +66,21 @@
 		</div><!-- /.container-fluid -->
 	</nav>
 
-    <section class="bg-primary-search" id="mapSection">
+    <div id="mapDiv">
 		<div class = "mapContainer" id="map"></div>
-    </section>
+    </div>
+	
+	<div class="testDiv" id="test"></div>
 	
     <!-- jQuery -->
     <script src="/js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
+    <script src="/js/jquery-ui-1.11.4/jquery-ui.js"></script>
+	<script src="/js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
-
+	
     <!-- Plugin JavaScript -->
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
-	<script src="/js/map.js"></script>
-    <script src="/js/jquery.easing.min.js"></script>
-    <script src="/js/jquery.fittext.js"></script>
-    <script src="/js/wow.min.js"></script>
-
-    <!-- Custom Theme JavaScript -->
-    <script src="/js/creative.js"></script>
+	<script src="/js/search.js"></script>
 
 </body>
 </html>
