@@ -7,21 +7,23 @@ import jinja2
 import json
 import urllib
 import logging
-from math import radians, cos, sin, asin, sqrt
 logging.getLogger().setLevel(logging.DEBUG)
 
+from google.appengine.ext import db
+from math import radians, cos, sin, asin, sqrt
+from models import *
 from google.appengine.api import app_identity
 from google.appengine.api import users
+from google.appengine.api import search
 from google.appengine.ext.webapp.util import login_required
-from array import *
 
-AVG_EARTH_RADIUS = 6371  # in km
+AVG_EARTH_RADIUS = 3956  # in mi
 
 #set jinja2 environment to connect html with python
 jinja_environment = jinja2.Environment(autoescape=True,
                                        loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),
                                                                                    'templates')))
-
+																				   
 #Render the main page of the application
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -54,125 +56,54 @@ class NewSearch(webapp2.RequestHandler):
 # Process entered postcode. 
 class ProcessPostCode(webapp2.RequestHandler):
 	def post(self):
-		lat_long = []
+		lat_long = (0.00, 0.00)
 		uPostcode = self.request.get('postcode').upper().strip()
 		tPostcode = uPostcode.replace(' ','')
 		logging.info(tPostcode)
-		bucket_name = os.environ.get('local-amenities.appspot.com', app_identity.get_default_gcs_bucket_name())
-		bucket = '/' + bucket_name
-		filename1 = bucket + '/Outcodes.csv'
-		filename2 = bucket + '/Postcodes.csv'
-		filename3 = bucket + '/Postcodes2.csv'
-		filename4 = bucket + '/Postcodes3.csv'
-		filename5 = bucket + '/Postcodes4.csv'
 		
-		lat_long = self.AccessOutcodes(filename1, tPostcode)
-		if(len(lat_long) == 0):
-			lat_long = self.AccessPostcodes(filename2, tPostcode)
-			if(len(lat_long) == 0):
-				lat_long = self.AccessPostcodes2(filename3, tPostcode)
-				if(len(lat_long) == 0):
-					lat_long = self.AccessPostcodes3(filename4, tPostcode)
-					if(len(lat_long) == 0):
-						lat_long = self.AccessPostcodes4(filename5, tPostcode)
-						if(len(lat_long) == 0):
-							self.response.out.write(json.dumps({'found': False}))
-							return
+		lat_long = self.AccessOutcodes(tPostcode)
+		if(lat_long == (0.00, 0.00)):
+			lat_long = self.AccessPostcodes(tPostcode)
+			if(lat_long == (0.00, 0.00)):
+				self.response.out.write(json.dumps({'found': False}))
+				return
+		self.response.out.write(json.dumps({'found': True, 'postcode': tPostcode, 'latitude': lat_long.lat, 'longitude': lat_long.lon}))
 
-		self.response.out.write(json.dumps({'found': True, 'postcode': tPostcode, 'latitude': lat_long[0], 'longitude': lat_long[1]}))
-
-	def AccessOutcodes(self, filename1, tPostcode):	
-		lat_long_outcodes = []
+	def AccessOutcodes(self, tPostcode):	
 		try:
-			gcs_file=gcs.open(filename1)
-			reader=csv.DictReader(gcs_file)
-			for row in reader:
-				if row['outcode'] == tPostcode:
-					lat_long_outcodes.insert(0,row['latitude'])
-					lat_long_outcodes.insert(1,row['longitude'])
-					break
-			gcs_file.close()
-			return lat_long_outcodes
+			lat_long = (0.00, 0.00)
+			#construct query
+			query = Outcode.gql('WHERE outcode=:1', tPostcode)
+			#Check if the postcode exists
+			if query.count() !=0  :
+				record = query.get()
+				lat_long = record.lat_long
+				logging.info(lat_long)
+			return 	lat_long
+		except Exception, e: 
+			logging.exception(e)
+			self.response.write('\n\nThere was an error running the demo! '
+								'Please check the logs for more details.\n')
+
+	def AccessPostcodes(self, tPostcode):	
+		try:
+			lat_long = (0.00, 0.00)
+			#construct query
+			query = Postcode.gql('WHERE postcode=:1', tPostcode)
+			#Check if the postcode exists
+			if query.count() !=0 :
+				record = query.get()
+				lat_long = record.lat_long
+				logging.info(lat_long)
+			return lat_long
 
 		except Exception, e: 
 			logging.exception(e)
 			self.response.write('\n\nThere was an error running the demo! '
 								'Please check the logs for more details.\n')
 
-	def AccessPostcodes(self, filename2, tPostcode):	
-		lat_long_outcodes = []
-		try:
-			gcs_file=gcs.open(filename2)
-			reader=csv.DictReader(gcs_file)
-			for row in reader:
-				if row['postcode'] == tPostcode:
-					lat_long_outcodes.insert(0,row['latitude'])
-					lat_long_outcodes.insert(1,row['longitude'])
-					break
-			gcs_file.close()
-			return lat_long_outcodes
-
-		except Exception, e: 
-			logging.exception(e)
-			self.response.write('\n\nThere was an error running the demo! '
-								'Please check the logs for more details.\n')
-
-	def AccessPostcodes2(self, filename3, tPostcode):	
-		lat_long_outcodes = []
-		try:
-			gcs_file=gcs.open(filename3)
-			reader=csv.DictReader(gcs_file)
-			for row in reader:
-				if row['postcode'] == tPostcode:
-					lat_long_outcodes.insert(0,row['latitude'])
-					lat_long_outcodes.insert(1,row['longitude'])
-					break
-			gcs_file.close()
-			return lat_long_outcodes
-
-		except Exception, e: 
-			logging.exception(e)
-			self.response.write('\n\nThere was an error running the demo! '
-								'Please check the logs for more details.\n')
-
-	def AccessPostcodes3(self, filename4, tPostcode):	
-		lat_long_outcodes = []
-		try:
-			gcs_file=gcs.open(filename4)
-			reader=csv.DictReader(gcs_file)
-			for row in reader:
-				if row['postcode'] == tPostcode:
-					lat_long_outcodes.insert(0,row['latitude'])
-					lat_long_outcodes.insert(1,row['longitude'])
-					break
-			gcs_file.close()
-			return lat_long_outcodes
-
-		except Exception, e: 
-			logging.exception(e)
-			self.response.write('\n\nThere was an error running the demo! '
-								'Please check the logs for more details.\n')
-
-	def AccessPostcodes4(self, filename5, tPostcode):	
-		lat_long_outcodes = []
-		try:
-			gcs_file=gcs.open(filename5)
-			reader=csv.DictReader(gcs_file)
-			for row in reader:
-				if row['postcode'] == tPostcode:
-					lat_long_outcodes.insert(0,row['latitude'])
-					lat_long_outcodes.insert(1,row['longitude'])
-					break
-			gcs_file.close()
-			return lat_long_outcodes
-
-		except Exception, e: 
-			logging.exception(e)
-			self.response.write('\n\nThere was an error running the demo! '
-								'Please check the logs for more details.\n')
-
-# Look up for nearest amenities. 
-class lookUp(webapp2.RequestHandler):
+# Look up for nearest general practitioner. 
+class lookUpGP(webapp2.RequestHandler):
 	def post(self):
 		gp = []
 		postcode = self.request.get('postcode')
@@ -181,32 +112,30 @@ class lookUp(webapp2.RequestHandler):
 		logging.info(postcode)
 		logging.info(latitude)
 		logging.info(longitude)
-		bucket_name = os.environ.get('local-amenities.appspot.com', app_identity.get_default_gcs_bucket_name())
-		bucket = '/' + bucket_name
-		GP_file = bucket + '/GP.csv'
-		gp = self.AccessGP(GP_file, postcode, latitude, longitude)
+		gp = self.AccessGP(postcode, latitude, longitude)
 		#logging.info(json.dumps(gp))		
 		self.response.out.write(json.dumps(gp))
 		
-	def AccessGP(self, GP_file, postcode, latitude, longitude):
+	def AccessGP(self, postcode, latitude, longitude):
 		try:
 			gp =[]
-			distance = 0
-			gcs_file=gcs.open(GP_file)
-			reader=csv.DictReader(gcs_file)
-			for row in reader:
-				if len(row['Latitude']) != 0 and len(row['Longitude']) != 0 :
-					point1= (float(latitude), float(longitude))
-					point2= (float(row['Latitude']), float(row['Longitude']))
-					distance = self.haversine(point1, point2)
-					#if distance <= 48.28 :
-					name = row['Name']
-					address = row['Address Line 1'] + " " + row['Address Line 2'] + " " + row['Address Line 3'] + " " + row['Address Line 4'] + " " + row['Address Line 5']
-					postcode = row['Postcode']
-					latitude = row['Latitude']
-					longitude = row['Longitude']
-					gp.append({'name': name, 'address' : address, 'postcode': postcode, 'latitude': latitude, 'longitude': longitude, 'distance': distance})
-			gcs_file.close()
+			dist = 0.00
+			point1 =(float(latitude), float(longitude))
+			start = str(postcode[0:4])
+			logging.info(start)
+			query = GP.all()
+			query.filter("postcode >=", start).filter("postcode <", start + "\uFFFD")
+			logging.info(query.count())
+			records = query.run(batch_size=1000)
+			for record in records:
+				if record.lat_long != (0.00, 0.00) :
+					geopoint= record.lat_long
+					point2 = (geopoint.lat, geopoint.lon)
+					dist = haversine(point1, point2)
+					address = record.address
+					address = address.replace(", , ,",", ")
+					address = address.replace(", , ",", ")
+					gp.append({'name': record.name, 'address' : address, 'postcode': record.postcode, 'latitude': geopoint.lat, 'longitude': geopoint.lon, 'distance': dist})
 			return  gp
 
 		except Exception, e: 
@@ -214,26 +143,145 @@ class lookUp(webapp2.RequestHandler):
 			self.response.write('\n\nThere was an error running the demo! '
 								'Please check the logs for more details.\n')
 								
-	def haversine(self, point1, point2):
-		# unpack latitude/longitude
-		lat1, lng1 = point1
-		lat2, lng2 = point2
+def haversine(point1, point2):
+	# unpack latitude/longitude
+	lat1, lng1 = point1
+	lat2, lng2 = point2
 
-		# convert all latitudes/longitudes from decimal degrees to radians
-		lat1, lng1, lat2, lng2 = list(map(radians, [lat1, lng1, lat2, lng2]))
+	# convert all latitudes/longitudes from decimal degrees to radians
+	lat1, lng1, lat2, lng2 = list(map(radians, [lat1, lng1, lat2, lng2]))
 
-		# calculate haversine
-		lat = lat2 - lat1
-		lng = lng2 - lng1
-		d = sin(lat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(lng / 2) ** 2
-		h = 2 * AVG_EARTH_RADIUS * asin(sqrt(d))
-		return round(h * 0.621371, 2)  # in miles
+	# calculate haversine
+	lat = lat2 - lat1
+	lng = lng2 - lng1
+	d = sin(lat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(lng / 2) ** 2
+	h = 2 * AVG_EARTH_RADIUS * asin(sqrt(d))
+	return round(h, 2)
+		
+# Look up for nearest train station. 
+class lookUpTrainStation(webapp2.RequestHandler):
+	def post(self):
+		gp = []
+		postcode = self.request.get('postcode')
+		latitude = self.request.get('latitude')
+		longitude = self.request.get('longitude')
+		logging.info(postcode)
+		logging.info(latitude)
+		logging.info(longitude)
+		gp = self.AccessTrainStation(postcode, latitude, longitude)
+		#logging.info(json.dumps(gp))		
+		self.response.out.write(json.dumps(gp))
+		
+	def AccessTrainStation(self, postcode, latitude, longitude):
+		try:
+			trainStation =[]
+			dist = 0.00
+			point1 =(float(latitude), float(longitude))
+			records = TrainStation.all().run(batch_size=2700)
+			for record in records:
+				if record.lat_long != (0.00, 0.00) :
+					geopoint= record.lat_long
+					point2 = (geopoint.lat, geopoint.lon)
+					dist = haversine(point1, point2)
+					if dist <= 5 :
+						trainStation.append({'name': record.name, 'latitude': geopoint.lat, 'longitude': geopoint.lon, 'distance': dist})
+			return  trainStation
+
+		except Exception, e: 
+			logging.exception(e)
+			self.response.write('\n\nThere was an error running the demo! '
+								'Please check the logs for more details.\n')
+								
+# Look up for nearest supermarkets. 
+class lookUpSupermarket(webapp2.RequestHandler):
+	def post(self):
+		supermarket = []
+		postcode = self.request.get('postcode')
+		latitude = self.request.get('latitude')
+		longitude = self.request.get('longitude')
+		logging.info(postcode)
+		logging.info(latitude)
+		logging.info(longitude)
+		supermarket = self.AccessSupermarket(postcode, latitude, longitude)	
+		#logging.info(json.dumps(supermarket))
+		self.response.out.write(json.dumps(supermarket))
+		
+	def AccessSupermarket(self, postcode, latitude, longitude):
+		try:
+			supermarket =[]
+			dist = 0.00
+			point1 =(float(latitude), float(longitude))
+			start = str(postcode[0:4])
+			logging.info(start)
+			query = Supermarket.all()
+			query.filter("postcode >=", start).filter("postcode <", start + "\uFFFD")
+			logging.info(query.count())
+			records = query.run(batch_size=1000)
+			for record in records:
+				if record.lat_long != (0.00, 0.00) :
+					geopoint= record.lat_long
+					point2 = (geopoint.lat, geopoint.lon)
+					dist = haversine(point1, point2)
+					address = record.address
+					address = address.replace(", , ,",", ")
+					address = address.replace(", , ",", ")
+					supermarket.append({'name': record.name, 'address' : address, 'postcode': record.postcode, 'latitude': geopoint.lat, 'longitude': geopoint.lon, 'distance': dist})
+			return  supermarket
+
+		except Exception, e: 
+			logging.exception(e)
+			self.response.write('\n\nThere was an error running the demo! '
+								'Please check the logs for more details.\n')
+
+# Look up for nearest schools. 
+class lookUpSchool(webapp2.RequestHandler):
+	def post(self):
+		school = []
+		postcode = self.request.get('postcode')
+		latitude = self.request.get('latitude')
+		longitude = self.request.get('longitude')
+		logging.info(postcode)
+		logging.info(latitude)
+		logging.info(longitude)
+		school = self.AccessSchool(postcode, latitude, longitude)	
+		#logging.info(json.dumps(school))
+		self.response.out.write(json.dumps(school))
+		
+	def AccessSchool(self, postcode, latitude, longitude):
+		try:
+			school =[]
+			dist = 0.00
+			point1 =(float(latitude), float(longitude))
+			start = str(postcode[0:4])
+			logging.info(start)
+			query = School.all()
+			query.filter("postcode >=", start).filter("postcode <", start + "\uFFFD")
+			logging.info(query.count())
+			records = query.run(batch_size=1000)
+			for record in records:
+				if record.lat_long != (0.00, 0.00) :
+					geopoint= record.lat_long
+					point2 = (geopoint.lat, geopoint.lon)
+					dist = haversine(point1, point2)
+					address = record.address
+					address = address.replace(", , ,",", ")
+					address = address.replace(", , ",", ")
+					school.append({'name': record.name, 'address' : address, 'postcode': record.postcode, 'latitude': geopoint.lat, 'longitude': geopoint.lon, 'distance': dist})
+			return  school
+
+		except Exception, e: 
+			logging.exception(e)
+			self.response.write('\n\nThere was an error running the demo! '
+								'Please check the logs for more details.\n')								
 
 #Handles application routes
 app = webapp2.WSGIApplication([
     ('/', MainPage),
 	('/search', NewSearch),
 	('/processPostCode', ProcessPostCode),
-	('/lookUp', lookUp)
+	('/lookUpGP', lookUpGP),
+	('/lookUpTrainStation', lookUpTrainStation),
+	('/lookUpSupermarket', lookUpSupermarket),
+	('/lookUpSchool', lookUpSchool)
 ], debug=True)
 	

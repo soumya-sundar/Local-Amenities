@@ -32,7 +32,7 @@
   color: #000000;
   background-color: #fff;
 }
-.mapContainer { height: 360px; }
+.mapContainer { height: 500px; }
 
 .show {
   display: block !important;

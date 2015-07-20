@@ -11,13 +11,6 @@ my_default_retry_params = gcs.RetryParams(initial_delay=0.2,
                                           max_delay=5.0,
                                           backoff_factor=2,
                                           max_retry_period=15)
-# All requests to GCS using the GCS client within current GAE request and
-# current thread will use this retry params as default. If a default is not
-# set via this mechanism, the library's built-in default will be used.
-# Any GCS client function can also be given a more specific retry params
-# that overrides the default.
-# Note: the built-in default is good enough for most cases. We override
-# retry_params here only for demo purposes.
 gcs.set_default_retry_params(my_default_retry_params)
 
 
@@ -31,40 +24,22 @@ class MainPage(webapp2.RequestHandler):
                         + os.environ['CURRENT_VERSION_ID'] + '\n')
 		self.response.write('Using bucket name: ' + bucket_name + '\n\n')
 		bucket = '/' + bucket_name
-		filename = bucket + '/Outcodes.csv'
-		filename2 = bucket + '/Postcodes.csv'
-		filename3 = bucket + '/Postcodes2.csv'
-		filename4 = bucket + '/Postcodes3.csv'
-		filename5 = bucket + '/Postcodes4.csv'
-		filename6 = bucket + '/GP.csv'
-		filename7 = bucket + '/School.csv'
-		filename8 = bucket + '/School2.csv'
-		filename9 = bucket + '/Supermarket.csv'
-		filename10 = bucket + '/Trainstation.csv'
+		#filename = bucket + '/Outcodes.csv'
+		#filename2 = bucket + '/GP.csv'
+		filename3 = bucket + '/Postcodes.csv'
+		filename4 = bucket + '/TrainStation.csv'
+		filename5 = bucket + '/Supermarket.csv'
+		filename6 = bucket + '/School.csv'
 		self.tmp_filenames_to_clean_up = []
 		
 		try:
-			self.create_file(filename, 'Outcodes.csv')
-			self.response.write('\n\n')
-			self.create_file(filename2, 'Postcodes.csv')
-			self.response.write('\n\n')
-			self.create_file(filename3, 'Postcodes2.csv')
-			self.response.write('\n\n')			
-			self.create_file(filename4, 'Postcodes3.csv')
-			self.response.write('\n\n')	
-			self.create_file(filename5, 'Postcodes4.csv')
-			self.response.write('\n\n')
-			self.create_file(filename6, 'GP.csv')
-			self.response.write('\n\n')
-			self.create_file(filename7, 'School.csv')
-			self.response.write('\n\n')
-			self.create_file(filename8, 'School2.csv')
-			self.response.write('\n\n')
-			self.create_file(filename9, 'Supermarket.csv')
-			self.response.write('\n\n')
-			self.create_file(filename10, 'TrainStation.csv')
-			self.response.write('\n\n')
-			self.read_file(filename10)
+			#self.create_file(filename, 'Outcodes.csv')
+			#self.create_file(filename2, 'GP.csv')
+			self.create_file(filename3, 'Postcodes.csv')
+			self.create_file(filename4, 'TrainStation.csv')
+			self.create_file(filename5, 'Supermarket.csv')
+			self.create_file(filename6, 'School.csv')
+			self.read_file(filename6)
 			self.response.write('\n\n')
 
 		except Exception, e:  # pylint: disable=broad-except
