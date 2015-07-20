@@ -1,7 +1,10 @@
 var map = L.map('map').setView([51.505, -0.09], 13);
 var userPostCode;
-var marker;
-
+var marker = null;
+var gp_marker = [];
+var trainSt_marker = [];
+var supermarket_marker = [];
+var school_marker = [];
 
 var gpIcon = L.icon({
     iconUrl: '../img/gp.png',
@@ -40,6 +43,21 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 
 $('#submitButton').on("click",function(event){
 	userPostCode = $('#postcode').val();
+	if (marker !== null) {
+        map.removeLayer(marker);
+		for (i = 0; i < gp_marker.length; i++) { 
+			map.removeLayer(gp_marker[i]);
+		}
+		for (i = 0; i < trainSt_marker.length; i++) { 
+			map.removeLayer(trainSt_marker[i]);
+		}		
+		for (i = 0; i < supermarket_marker.length; i++) { 
+			map.removeLayer(supermarket_marker[i]);
+		}
+		for (i = 0; i < school_marker.length; i++) { 
+			map.removeLayer(school_marker[i]);
+		}	
+    }
 	$.ajax({
 		type: 'POST',
 		url: '/processPostCode',
@@ -157,31 +175,30 @@ function lookUpSchool(postcode, latitude, longitude){
 
 function displayGP(gpObject) {
 	$.each(gpObject, function(index, gpObject) {
-		L.marker([gpObject.latitude, gpObject.longitude], {icon: gpIcon}).addTo(map).bindPopup(gpObject.name + '<br/>' + gpObject.address + '<br/>' +
-		gpObject.postcode + ' ' + '['+ gpObject.distance + ' mi]');
+		gp_marker.push(L.marker([gpObject.latitude, gpObject.longitude], {icon: gpIcon}).addTo(map).bindPopup(gpObject.name + '<br/>' + gpObject.address + '<br/>' +
+		gpObject.postcode + ' ' + '['+ gpObject.distance + ' mi]'));
 	});
 }
 
 function displayTrainStation(tObject) {
 	$.each(tObject, function(index, tObject) {
-		L.marker([tObject.latitude, tObject.longitude], {icon: trainStIcon}).addTo(map).bindPopup(tObject.name + ' ' + '['+ tObject.distance + ' mi]');
+		trainSt_marker.push(L.marker([tObject.latitude, tObject.longitude], {icon: trainStIcon}).addTo(map).bindPopup(tObject.name + ' ' + '['+ tObject.distance + ' mi]'));
 	});
 }
 
 function displaySupermarket(spObject) {
 	$.each(spObject, function(index, spObject) {
-		L.marker([spObject.latitude, spObject.longitude], {icon: supermarketIcon}).addTo(map).bindPopup(spObject.name + '<br/>' + spObject.address + '<br/>' +
-		spObject.postcode + ' ' + '['+ spObject.distance + ' mi]');
+		supermarket_marker.push(L.marker([spObject.latitude, spObject.longitude], {icon: supermarketIcon}).addTo(map).bindPopup(spObject.name + '<br/>' + spObject.address + '<br/>' +
+		spObject.postcode + ' ' + '['+ spObject.distance + ' mi]'));
 	});
 }
 
 function displaySchool(slObject) {
 	$.each(slObject, function(index, slObject) {
-		L.marker([slObject.latitude, slObject.longitude], {icon: schoolIcon}).addTo(map).bindPopup(slObject.name + '<br/>' + slObject.address + '<br/>' +
-		slObject.postcode + ' ' + '['+ slObject.distance + ' mi]');
+		school_marker.push(L.marker([slObject.latitude, slObject.longitude], {icon: schoolIcon}).addTo(map).bindPopup(slObject.name + '<br/>' + slObject.address + '<br/>' +
+		slObject.postcode + ' ' + '['+ slObject.distance + ' mi]'));
 	});
 }
-
 
 
 
