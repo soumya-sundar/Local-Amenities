@@ -45,18 +45,27 @@ $('#submitButton').on("click",function(event){
 	userPostCode = $('#postcode').val();
 	if (marker !== null) {
         map.removeLayer(marker);
-		for (i = 0; i < gp_marker.length; i++) { 
-			map.removeLayer(gp_marker[i]);
-		}
-		for (i = 0; i < trainSt_marker.length; i++) { 
-			map.removeLayer(trainSt_marker[i]);
-		}		
-		for (i = 0; i < supermarket_marker.length; i++) { 
-			map.removeLayer(supermarket_marker[i]);
-		}
-		for (i = 0; i < school_marker.length; i++) { 
-			map.removeLayer(school_marker[i]);
-		}	
+		hideGP(gp_marker);
+		hideTrainStation(trainSt_marker);
+		hideSupermarket(supermarket_marker);
+		hideSchool(school_marker);
+		
+		$('.checkboxGP').prop({
+			checked : false, 
+			disabled : true
+		});
+		$('.checkboxTrainSt').prop({
+			checked : false, 
+			disabled : true
+		});
+		$('.checkboxSupermarket').prop({
+			checked : false, 
+			disabled : true
+		});
+		$('.checkboxSchool').prop({
+			checked : false, 
+			disabled : true
+		});
     }
 	$.ajax({
 		type: 'POST',
@@ -68,11 +77,27 @@ $('#submitButton').on("click",function(event){
 			var resParsed;
 			if(response.found === true) {
 				marker = L.marker([response.latitude, response.longitude]).addTo(map).bindPopup('<p>You are here ' + response.postcode + '</p>');
-				map.setView(new L.LatLng(response.latitude, response.longitude), 14);
+				map.setView(new L.LatLng(response.latitude, response.longitude), 15);
 				lookUpGP(response.postcode, response.latitude, response.longitude);
 				lookUpTrainStation(response.postcode, response.latitude, response.longitude);
 				lookUpSupermarket(response.postcode, response.latitude, response.longitude);
 				lookUpSchool(response.postcode, response.latitude, response.longitude);
+				$('.checkboxGP').prop({
+					checked : true, 
+					disabled : false
+				});
+				$('.checkboxTrainSt').prop({
+					checked : true, 
+					disabled : false
+				});
+				$('.checkboxSupermarket').prop({
+					checked : true, 
+					disabled : false
+				});
+				$('.checkboxSchool').prop({
+					checked : true, 
+					disabled : false
+				});
 			}
 			else {
 				$('#postcode').popover('show');
@@ -199,6 +224,102 @@ function displaySchool(slObject) {
 		slObject.postcode + ' ' + '['+ slObject.distance + ' mi]'));
 	});
 }
+
+function showGP(gp_marker) {
+	for (i = 0; i < gp_marker.length; i++) {
+		map.addLayer(gp_marker[i]);
+	}	
+}
+
+function hideGP(gp_marker) {
+	for (i = 0; i < gp_marker.length; i++) { 
+			map.removeLayer(gp_marker[i]);
+	}
+}
+
+function showTrainStation(trainSt_marker) {
+	for (i = 0; i < trainSt_marker.length; i++) {
+		map.addLayer(trainSt_marker[i]);
+	}	
+}
+
+function hideTrainStation(trainSt_marker) {
+	for (i = 0; i < trainSt_marker.length; i++) { 
+			map.removeLayer(trainSt_marker[i]);
+	}
+}
+
+function showSupermarket(supermarket_marker) {
+	for (i = 0; i < supermarket_marker.length; i++) {
+		map.addLayer(supermarket_marker[i]);
+	}	
+}
+
+function hideSupermarket(supermarket_marker) {
+	for (i = 0; i < supermarket_marker.length; i++) { 
+			map.removeLayer(supermarket_marker[i]);
+	}
+}
+
+function showSchool(school_marker) {
+	for (i = 0; i < school_marker.length; i++) {
+		map.addLayer(school_marker[i]);
+	}	
+}
+
+function hideSchool(school_marker) {
+	for (i = 0; i < school_marker.length; i++) { 
+			map.removeLayer(school_marker[i]);
+	}
+}
+
+$('.checkboxGP').on("click", function(event) {
+	if($('.checkboxGP').is(':checked')){
+		showGP(gp_marker);
+		$('.checkboxGP').prop(checked, true);
+	}
+    else if($('.checkboxGP').is(":not(:checked)")){	
+		hideGP(gp_marker);
+		$('.checkboxGP').prop(checked, false);
+    }
+	event.preventDefault();
+});
+
+$('.checkboxTrainSt').on("click", function(event) {
+	if($('.checkboxTrainSt').is(':checked')){
+		showTrainStation(trainSt_marker);
+		$('.checkboxTrainSt').prop(checked, true);
+	}
+    else if($('.checkboxTrainSt').is(":not(:checked)")){
+		hideTrainStation(trainSt_marker);
+		$('.checkboxTrainSt').prop(checked, false);
+    }
+	event.preventDefault();
+});
+
+$('.checkboxSupermarket').on("click", function(event) {
+	if($('.checkboxSupermarket').is(':checked')){
+		showSupermarket(supermarket_marker);
+		$('.checkboxSupermarket').prop(checked, true);
+	}
+    else if($('.checkboxSupermarket').is(":not(:checked)")){
+		hideSupermarket(supermarket_marker);
+		$('.checkboxSupermarket').prop(checked, false);
+    }
+	event.preventDefault();
+});
+
+$('.checkboxSchool').on("click", function(event) {
+	if($('.checkboxSchool').is(':checked')){
+		showSchool(school_marker);
+		$('.checkboxSchool').prop(checked, true);
+	}
+    else if($('.checkboxSchool').is(":not(:checked)")){
+		hideSchool(school_marker);
+		$('.checkboxSchool').prop(checked, false);
+    }
+	event.preventDefault();
+});
 
 
 
