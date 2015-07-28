@@ -6,6 +6,16 @@ var trainSt_marker = [];
 var supermarket_marker = [];
 var school_marker = [];
 
+$(document).ready(function(){
+	$(document).on('click', function(){
+      $("#postcode").popover('hide');
+	});
+	
+	$('#postcode').on('click', function() {
+		$(this).popover('hide');
+	});
+});
+
 var gpIcon = L.icon({
     iconUrl: '../img/gp.png',
     iconSize:     [30, 30], // size of the icon
@@ -129,7 +139,6 @@ function lookUpGP(postcode, latitude, longitude){
 			console.log(e.message);
 		}
 	});
-	event.preventDefault();
 }
 
 function lookUpTrainStation(postcode, latitude, longitude){
@@ -151,7 +160,6 @@ function lookUpTrainStation(postcode, latitude, longitude){
 			console.log(e.message);
 		}
 	});
-	event.preventDefault();
 }
 
 function lookUpSupermarket(postcode, latitude, longitude){
@@ -173,7 +181,6 @@ function lookUpSupermarket(postcode, latitude, longitude){
 			console.log(e.message);
 		}
 	});
-	event.preventDefault();
 }
 
 function lookUpSchool(postcode, latitude, longitude){
@@ -195,7 +202,6 @@ function lookUpSchool(postcode, latitude, longitude){
 			console.log(e.message);
 		}
 	});
-	event.preventDefault();
 }
 
 function displayGP(gpObject) {
