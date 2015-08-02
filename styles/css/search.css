@@ -23,18 +23,32 @@
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
     font-weight: 700;
 }
+.navbar-menu {
+    text-transform: uppercase;
+    font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
+    font-weight: 700;
+}
 .mapDiv{
   color: #000000;
   background-color: #fff;
 }
-
-.mapContainer { height: 500px; }
-
+.mapContainer { height: 450px; }
 .checkbox{
   color: #006699;
   background-color: #fff;
   font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
   font-size: 14px;
+}
+.disclaimer{
+  color: #ff0000;
+  background-color: #cdffff;
+  font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
+  font-size: 14px;
+  position: absolute;
+  left: 430px;
+  padding: 5px;
+  z-index: 100;
+  display: none;
 }
 
 .show {

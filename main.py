@@ -47,9 +47,13 @@ class MainPage(webapp2.RequestHandler):
 class NewSearch(webapp2.RequestHandler):
 	@login_required
 	def get(self):
-		current_user = users.get_current_user().nickname()
-		url = users.create_logout_url(self.request.uri)
-		template_values = {'user_nickname': current_user, 'url': url}
+		current_user = users.get_current_user()
+		if current_user:
+			current_user = users.get_current_user().nickname()
+			url = users.create_logout_url('/')
+			url_text = 'Logout'
+			
+		template_values = {'user_nickname': current_user, 'url': url, 'url_text': url_text}
 		template = jinja_environment.get_template('search.html')
 		self.response.write(template.render(template_values))
 		
@@ -272,8 +276,8 @@ class lookUpSchool(webapp2.RequestHandler):
 		except Exception, e: 
 			logging.exception(e)
 			self.response.write('\n\nThere was an error running the demo! '
-								'Please check the logs for more details.\n')								
-
+								'Please check the logs for more details.\n')
+	
 #Handles application routes
 app = webapp2.WSGIApplication([
     ('/', MainPage),

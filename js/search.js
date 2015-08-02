@@ -52,8 +52,15 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 }).addTo(map);
 
 $('#submitButton').on("click",function(event){
+	$(".disclaimer").animate({
+		width: [ "toggle", "swing" ],
+		height: [ "toggle", "swing" ],
+		opacity: "toggle"
+		}, 500, "swing", function() {
+	});
 	userPostCode = $('#postcode').val();
 	if (marker !== null) {
+		$( ".disclaimer" ).show("hide");
         map.removeLayer(marker);
 		hideGP(gp_marker);
 		hideTrainStation(trainSt_marker);
@@ -85,7 +92,7 @@ $('#submitButton').on("click",function(event){
 		data: {'postcode': userPostCode},
 		success: function(response){
 			var resParsed;
-			if(response.found === true) {
+			if(response.found === true) {		
 				marker = L.marker([response.latitude, response.longitude]).addTo(map).bindPopup('<p>You are here ' + response.postcode + '</p>');
 				map.setView(new L.LatLng(response.latitude, response.longitude), 15);
 				lookUpGP(response.postcode, response.latitude, response.longitude);
@@ -326,6 +333,4 @@ $('.checkboxSchool').on("click", function(event) {
     }
 	event.preventDefault();
 });
-
-
 
