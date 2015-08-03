@@ -39,16 +39,10 @@
   font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
   font-size: 14px;
 }
+
 .disclaimer{
-  color: #ff0000;
-  background-color: #cdffff;
-  font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
-  font-size: 14px;
-  position: absolute;
-  left: 430px;
-  padding: 5px;
-  z-index: 100;
-  display: none;
+	color: #000000;
+    background-color: #fff;
 }
 
 .show {

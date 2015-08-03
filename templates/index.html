@@ -53,8 +53,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-						<a class="btn btn-primary" href="{{ url|safe }}"><i class="fa fa-user fa-fw"></i> {{ url_text  }} </a> 
+						<a class="btn btn-primary" href="{{ url|safe }}"><i class="fa fa-user fa-fw"></i> {{ url_text }} </a> 
                     </li>
+					{%if url_text == "Logout"%}
+						<li>
+							<a class="page-scroll" href="/search">Search</a>
+						</li>					
+					{% endif %}
                     <li>
                         <a class="page-scroll" href="#about">About</a>
                     </li>
@@ -76,7 +81,7 @@
             <div class="header-content-inner">
                 <h1>Your favorite map which displays nearest local amenities</h1>
                 <hr>
-                <h3>Local Amenities map can help you to locate the nearest local amenities! This will help you assess the locality during property search!</h3>
+                <h3>Local Amenities map provides information about the nearest local amenities! This will help you assess the locality in general!</h3>
                 <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
             </div>
         </div>
@@ -88,7 +93,7 @@
                 <div class="col-lg-8 col-lg-offset-2 text-center">
                     <h2 class="section-heading">We've got what you need!</h2>
                     <hr class="light">
-                    <p class="text-faded">Local Amenities map displays all necessary information needed to get a good idea about the locality! All the information is free and easily accessible!</p>
+                    <p class="text-faded">Local Amenities map displays some essential information required to get a good idea about the locality! All the information is free and easily accessible!</p>
                     <a href="/search" class="btn btn-default btn-xl">Get Started!</a>
                 </div>
             </div>
@@ -111,7 +116,7 @@
             <div class="row no-gutter">
                 <div class="col-lg-4 col-sm-6">
                     <a href="#" class="portfolio-box">
-                        <img src="/img/portfolio/1.jpg" class="img-responsive" alt="">
+                        <img src="/img/portfolio/1.png" class="img-responsive" alt="" style="width:400px;height:228px;">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
@@ -126,7 +131,7 @@
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <a href="#" class="portfolio-box">
-                        <img src="/img/portfolio/2.jpg" class="img-responsive" alt="">
+                        <img src="/img/portfolio/2.png" class="img-responsive" alt="" style="width:400px;height:228px;">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
@@ -141,7 +146,7 @@
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <a href="#" class="portfolio-box">
-                        <img src="/img/portfolio/3.jpg" class="img-responsive" alt="">
+                        <img src="/img/portfolio/3.gif" class="img-responsive" alt="" style="width:420px;height:228px;">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
@@ -156,7 +161,7 @@
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <a href="#" class="portfolio-box">
-                        <img src="/img/portfolio/4.jpg" class="img-responsive" alt="">
+                        <img src="/img/portfolio/4.jpeg" class="img-responsive" alt="" style="width:400px;height:228px;">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
@@ -171,7 +176,7 @@
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <a href="#" class="portfolio-box">
-                        <img src="/img/portfolio/5.jpg" class="img-responsive" alt="">
+                        <img src="/img/portfolio/5.png" class="img-responsive" alt="" style="width:420px;height:228px;">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
@@ -186,7 +191,7 @@
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <a href="#" class="portfolio-box">
-                        <img src="/img/portfolio/6.jpg" class="img-responsive" alt="">
+                        <img src="/img/portfolio/6.png" class="img-responsive" alt="" style="width:420px;height:228px;">
                         <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">

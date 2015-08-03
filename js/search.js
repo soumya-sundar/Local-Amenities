@@ -52,12 +52,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 }).addTo(map);
 
 $('#submitButton').on("click",function(event){
-	$(".disclaimer").animate({
-		width: [ "toggle", "swing" ],
-		height: [ "toggle", "swing" ],
-		opacity: "toggle"
-		}, 500, "swing", function() {
-	});
+
 	userPostCode = $('#postcode').val();
 	if (marker !== null) {
 		$( ".disclaimer" ).show("hide");
