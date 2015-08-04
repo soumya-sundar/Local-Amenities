@@ -73,6 +73,7 @@ class ProcessPostCode(webapp2.RequestHandler):
 				return
 		self.response.out.write(json.dumps({'found': True, 'postcode': tPostcode, 'latitude': lat_long.lat, 'longitude': lat_long.lon}))
 
+	#Function to validate if the user input is a valid area code.
 	def AccessOutcodes(self, tPostcode):	
 		try:
 			lat_long = (0.00, 0.00)
@@ -88,7 +89,8 @@ class ProcessPostCode(webapp2.RequestHandler):
 			logging.exception(e)
 			self.response.write('\n\nThere was an error running the demo! '
 								'Please check the logs for more details.\n')
-
+								
+	#Function to validate if the user input is a valid postal code.
 	def AccessPostcodes(self, tPostcode):	
 		try:
 			lat_long = (0.00, 0.00)
@@ -120,6 +122,7 @@ class lookUpGP(webapp2.RequestHandler):
 		#logging.info(json.dumps(gp))		
 		self.response.out.write(json.dumps(gp))
 		
+	#Retrieve GP records matching the area code.
 	def AccessGP(self, postcode, latitude, longitude):
 		try:
 			gp =[]
@@ -146,7 +149,8 @@ class lookUpGP(webapp2.RequestHandler):
 			logging.exception(e)
 			self.response.write('\n\nThere was an error running the demo! '
 								'Please check the logs for more details.\n')
-								
+
+# Calculate distance between two pairs of lat-lon values								
 def haversine(point1, point2):
 	# unpack latitude/longitude
 	lat1, lng1 = point1
@@ -175,7 +179,8 @@ class lookUpTrainStation(webapp2.RequestHandler):
 		gp = self.AccessTrainStation(postcode, latitude, longitude)
 		#logging.info(json.dumps(gp))		
 		self.response.out.write(json.dumps(gp))
-		
+	
+	#Retrieve train station records matching the area code.
 	def AccessTrainStation(self, postcode, latitude, longitude):
 		try:
 			trainStation =[]
@@ -209,7 +214,8 @@ class lookUpSupermarket(webapp2.RequestHandler):
 		supermarket = self.AccessSupermarket(postcode, latitude, longitude)	
 		#logging.info(json.dumps(supermarket))
 		self.response.out.write(json.dumps(supermarket))
-		
+	
+	#Retrieve supermarket records matching the area code.
 	def AccessSupermarket(self, postcode, latitude, longitude):
 		try:
 			supermarket =[]
@@ -250,7 +256,8 @@ class lookUpSchool(webapp2.RequestHandler):
 		school = self.AccessSchool(postcode, latitude, longitude)	
 		#logging.info(json.dumps(school))
 		self.response.out.write(json.dumps(school))
-		
+	
+	#Retrieve school records matching the area code.
 	def AccessSchool(self, postcode, latitude, longitude):
 		try:
 			school =[]

@@ -1,3 +1,6 @@
+//Initialise variables.
+
+//Setting up the map.
 var map = L.map('map').setView([51.505, -0.09], 13);
 var userPostCode;
 var marker = null;
@@ -6,6 +9,47 @@ var trainSt_marker = [];
 var supermarket_marker = [];
 var school_marker = [];
 
+//Custom icon for GP.
+var gpIcon = L.icon({
+    iconUrl: '../img/gp.png',
+    iconSize:     [30, 30], // size of the icon
+    iconAnchor:   [30, 30], // point of the icon which will correspond to marker's location
+    popupAnchor:  [-15, -27] // point from which the popup should open relative to the iconAnchor
+});
+
+//Custom icon for train station.
+var trainStIcon = L.icon({
+    iconUrl: '../img/trainSt.jpg',
+    iconSize:     [30, 20], // size of the icon
+    iconAnchor:   [30, 20], // point of the icon which will correspond to marker's location
+    popupAnchor:  [-15, -18] // point from which the popup should open relative to the iconAnchor
+});
+
+//Custom icon for supermarket.
+var supermarketIcon = L.icon({
+    iconUrl: '../img/supermarket.png',
+    iconSize:     [30, 30], // size of the icon
+    iconAnchor:   [30, 30], // point of the icon which will correspond to marker's location
+    popupAnchor:  [-15, -30] // point from which the popup should open relative to the iconAnchor
+});
+
+//Custom icon for school.
+var schoolIcon = L.icon({
+    iconUrl: '../img/school.png',
+    iconSize:     [30, 28], // size of the icon
+    iconAnchor:   [30, 28], // point of the icon which will correspond to marker's location
+    popupAnchor:  [-15, -28] // point from which the popup should open relative to the iconAnchor
+});
+
+//Adding tile layer to the Map.
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+	maxZoom: 18,
+	id: 'soumyasundar.f9f4c7f8',
+	accessToken: 'pk.eyJ1Ijoic291bXlhc3VuZGFyIiwiYSI6ImFmMWMzNTMxOGVkZTVlMGNmYmE4ZGQ5ZWJkZWE3YTU2In0.zipdQb4X9PVTAMVvu4r-6g'
+}).addTo(map);
+
+//Event handler to hide the postcode popover.
 $(document).ready(function(){
 	$(document).on('click', function(){
       $("#postcode").popover('hide');
@@ -16,44 +60,11 @@ $(document).ready(function(){
 	});
 });
 
-var gpIcon = L.icon({
-    iconUrl: '../img/gp.png',
-    iconSize:     [30, 30], // size of the icon
-    iconAnchor:   [30, 30], // point of the icon which will correspond to marker's location
-    popupAnchor:  [-15, -27] // point from which the popup should open relative to the iconAnchor
-});
-
-var trainStIcon = L.icon({
-    iconUrl: '../img/trainSt.jpg',
-    iconSize:     [30, 20], // size of the icon
-    iconAnchor:   [30, 20], // point of the icon which will correspond to marker's location
-    popupAnchor:  [-15, -18] // point from which the popup should open relative to the iconAnchor
-});
-
-var supermarketIcon = L.icon({
-    iconUrl: '../img/supermarket.png',
-    iconSize:     [30, 30], // size of the icon
-    iconAnchor:   [30, 30], // point of the icon which will correspond to marker's location
-    popupAnchor:  [-15, -30] // point from which the popup should open relative to the iconAnchor
-});
-
-var schoolIcon = L.icon({
-    iconUrl: '../img/school.png',
-    iconSize:     [30, 28], // size of the icon
-    iconAnchor:   [30, 28], // point of the icon which will correspond to marker's location
-    popupAnchor:  [-15, -28] // point from which the popup should open relative to the iconAnchor
-});
-
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-	maxZoom: 18,
-	id: 'soumyasundar.f9f4c7f8',
-	accessToken: 'pk.eyJ1Ijoic291bXlhc3VuZGFyIiwiYSI6ImFmMWMzNTMxOGVkZTVlMGNmYmE4ZGQ5ZWJkZWE3YTU2In0.zipdQb4X9PVTAMVvu4r-6g'
-}).addTo(map);
-
+//Submit button event handler.
 $('#submitButton').on("click",function(event){
 
 	userPostCode = $('#postcode').val();
+	//If marker already exists, remove the map layer and other markers.
 	if (marker !== null) {
 		$( ".disclaimer" ).show("hide");
         map.removeLayer(marker);
@@ -62,6 +73,7 @@ $('#submitButton').on("click",function(event){
 		hideSupermarket(supermarket_marker);
 		hideSchool(school_marker);
 		
+		//Uncheck & disable the check boxes.
 		$('.checkboxGP').prop({
 			checked : false, 
 			disabled : true
@@ -79,6 +91,8 @@ $('#submitButton').on("click",function(event){
 			disabled : true
 		});
     }
+	
+	// ajax call to process the entered postcode validate and return results.
 	$.ajax({
 		type: 'POST',
 		url: '/processPostCode',
@@ -87,13 +101,17 @@ $('#submitButton').on("click",function(event){
 		data: {'postcode': userPostCode},
 		success: function(response){
 			var resParsed;
-			if(response.found === true) {		
+			if(response.found === true) {
+				
+				//Postcode is found so create postcode marker, set map view and call functions to look up for local amenities.
 				marker = L.marker([response.latitude, response.longitude]).addTo(map).bindPopup('<p>You are here ' + response.postcode + '</p>');
 				map.setView(new L.LatLng(response.latitude, response.longitude), 15);
 				lookUpGP(response.postcode, response.latitude, response.longitude);
 				lookUpTrainStation(response.postcode, response.latitude, response.longitude);
 				lookUpSupermarket(response.postcode, response.latitude, response.longitude);
 				lookUpSchool(response.postcode, response.latitude, response.longitude);
+				
+				//Enable and check the check boxes to allow selective display.
 				$('.checkboxGP').prop({
 					checked : true, 
 					disabled : false
@@ -112,6 +130,7 @@ $('#submitButton').on("click",function(event){
 				});
 			}
 			else {
+				//Post is not found so display the popover message.
 				$('#postcode').popover('show');
 			}
 		},
@@ -122,6 +141,7 @@ $('#submitButton').on("click",function(event){
 	event.preventDefault();
 });
 
+//Function to retrieve the GP records.
 function lookUpGP(postcode, latitude, longitude){
 	$.ajax({
 		type: 'POST',
@@ -131,6 +151,7 @@ function lookUpGP(postcode, latitude, longitude){
 		data: {'postcode': postcode, 'latitude': latitude, 'longitude': longitude},
 		success: function(response){
 			if(response) {
+				//Call to display the GP records.
 				displayGP(response);
 			}
 			else {
@@ -143,6 +164,7 @@ function lookUpGP(postcode, latitude, longitude){
 	});
 }
 
+//Function to retrieve the train station records.
 function lookUpTrainStation(postcode, latitude, longitude){
 	$.ajax({
 		type: 'POST',
@@ -152,6 +174,7 @@ function lookUpTrainStation(postcode, latitude, longitude){
 		data: {'postcode': postcode, 'latitude': latitude, 'longitude': longitude},
 		success: function(response){
 			if(response) {
+				//Call to display the train station records.
 				displayTrainStation(response);
 			}
 			else {
@@ -164,6 +187,7 @@ function lookUpTrainStation(postcode, latitude, longitude){
 	});
 }
 
+//Function to retrieve the supermarket records.
 function lookUpSupermarket(postcode, latitude, longitude){
 	$.ajax({
 		type: 'POST',
@@ -173,6 +197,7 @@ function lookUpSupermarket(postcode, latitude, longitude){
 		data: {'postcode': postcode, 'latitude': latitude, 'longitude': longitude},
 		success: function(response){
 			if(response) {
+				//Call to display the supermarket records.
 				displaySupermarket(response);
 			}
 			else {
@@ -185,6 +210,7 @@ function lookUpSupermarket(postcode, latitude, longitude){
 	});
 }
 
+//Function to retrieve the school records.
 function lookUpSchool(postcode, latitude, longitude){
 	$.ajax({
 		type: 'POST',
@@ -194,6 +220,7 @@ function lookUpSchool(postcode, latitude, longitude){
 		data: {'postcode': postcode, 'latitude': latitude, 'longitude': longitude},
 		success: function(response){
 			if(response) {
+				//Call to display the school records.
 				displaySchool(response);
 			}
 			else {
@@ -206,6 +233,7 @@ function lookUpSchool(postcode, latitude, longitude){
 	});
 }
 
+//Function to display GP records on the map.
 function displayGP(gpObject) {
 	$.each(gpObject, function(index, gpObject) {
 		gp_marker.push(L.marker([gpObject.latitude, gpObject.longitude], {icon: gpIcon}).addTo(map).bindPopup(gpObject.name + '<br/>' + gpObject.address + '<br/>' +
@@ -213,12 +241,14 @@ function displayGP(gpObject) {
 	});
 }
 
+//Function to display train station records on the map.
 function displayTrainStation(tObject) {
 	$.each(tObject, function(index, tObject) {
 		trainSt_marker.push(L.marker([tObject.latitude, tObject.longitude], {icon: trainStIcon}).addTo(map).bindPopup(tObject.name + ' ' + '['+ tObject.distance + ' mi]'));
 	});
 }
 
+//Function to display supermarket records on the map.
 function displaySupermarket(spObject) {
 	$.each(spObject, function(index, spObject) {
 		supermarket_marker.push(L.marker([spObject.latitude, spObject.longitude], {icon: supermarketIcon}).addTo(map).bindPopup(spObject.name + '<br/>' + spObject.address + '<br/>' +
@@ -226,6 +256,7 @@ function displaySupermarket(spObject) {
 	});
 }
 
+//Function to display school records on the map.
 function displaySchool(slObject) {
 	$.each(slObject, function(index, slObject) {
 		school_marker.push(L.marker([slObject.latitude, slObject.longitude], {icon: schoolIcon}).addTo(map).bindPopup(slObject.name + '<br/>' + slObject.address + '<br/>' +
@@ -233,54 +264,63 @@ function displaySchool(slObject) {
 	});
 }
 
+//Function to show GP records on the map in reponse to the check box event.
 function showGP(gp_marker) {
 	for (i = 0; i < gp_marker.length; i++) {
 		map.addLayer(gp_marker[i]);
 	}	
 }
 
+//Function to hide GP records on the map in reponse to the check box event.
 function hideGP(gp_marker) {
 	for (i = 0; i < gp_marker.length; i++) { 
 			map.removeLayer(gp_marker[i]);
 	}
 }
 
+//Function to show train station records on the map in reponse to the check box event.
 function showTrainStation(trainSt_marker) {
 	for (i = 0; i < trainSt_marker.length; i++) {
 		map.addLayer(trainSt_marker[i]);
 	}	
 }
 
+//Function to hide train station records on the map in reponse to the check box event.
 function hideTrainStation(trainSt_marker) {
 	for (i = 0; i < trainSt_marker.length; i++) { 
 			map.removeLayer(trainSt_marker[i]);
 	}
 }
 
+//Function to show supermarket records on the map in reponse to the check box event.
 function showSupermarket(supermarket_marker) {
 	for (i = 0; i < supermarket_marker.length; i++) {
 		map.addLayer(supermarket_marker[i]);
 	}	
 }
 
+//Function to hide supermarket records on the map in reponse to the check box event.
 function hideSupermarket(supermarket_marker) {
 	for (i = 0; i < supermarket_marker.length; i++) { 
 			map.removeLayer(supermarket_marker[i]);
 	}
 }
 
+//Function to show school records on the map in reponse to the check box event.
 function showSchool(school_marker) {
 	for (i = 0; i < school_marker.length; i++) {
 		map.addLayer(school_marker[i]);
 	}	
 }
 
+//Function to hide school records on the map in reponse to the check box event.
 function hideSchool(school_marker) {
 	for (i = 0; i < school_marker.length; i++) { 
 			map.removeLayer(school_marker[i]);
 	}
 }
 
+//GP check box event handler.
 $('.checkboxGP').on("click", function(event) {
 	if($('.checkboxGP').is(':checked')){
 		showGP(gp_marker);
@@ -293,6 +333,7 @@ $('.checkboxGP').on("click", function(event) {
 	event.preventDefault();
 });
 
+//Train station check box event handler.
 $('.checkboxTrainSt').on("click", function(event) {
 	if($('.checkboxTrainSt').is(':checked')){
 		showTrainStation(trainSt_marker);
@@ -305,6 +346,7 @@ $('.checkboxTrainSt').on("click", function(event) {
 	event.preventDefault();
 });
 
+//Supermarket check box event handler.
 $('.checkboxSupermarket').on("click", function(event) {
 	if($('.checkboxSupermarket').is(':checked')){
 		showSupermarket(supermarket_marker);
@@ -317,6 +359,7 @@ $('.checkboxSupermarket').on("click", function(event) {
 	event.preventDefault();
 });
 
+//School check box event handler.
 $('.checkboxSchool').on("click", function(event) {
 	if($('.checkboxSchool').is(':checked')){
 		showSchool(school_marker);
