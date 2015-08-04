@@ -72,6 +72,10 @@ $('#submitButton').on("click",function(event){
 		hideTrainStation(trainSt_marker);
 		hideSupermarket(supermarket_marker);
 		hideSchool(school_marker);
+		gp_marker = [];
+		trainSt_marker = [];
+		supermarket_marker = [];
+		school_marker = [];
 		
 		//Uncheck & disable the check boxes.
 		$('.checkboxGP').prop({
