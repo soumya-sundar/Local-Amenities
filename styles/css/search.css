@@ -28,11 +28,8 @@
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
     font-weight: 700;
 }
-.mapDiv{
-  color: #000000;
-  background-color: #fff;
-}
-.mapContainer { height: 450px; }
+
+.mapContainer { height: 70vh; }
 .checkbox{
   color: #006699;
   background-color: #fff;
