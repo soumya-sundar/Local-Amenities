@@ -128,7 +128,7 @@ class lookUpGP(webapp2.RequestHandler):
 			gp =[]
 			dist = 0.00
 			point1 =(float(latitude), float(longitude))
-			start = str(postcode[0:4])
+			start = str(postcode[0:2])
 			logging.info(start)
 			query = GP.all()
 			query.filter("postcode >=", start).filter("postcode <", start + "\uFFFD")
@@ -221,7 +221,7 @@ class lookUpSupermarket(webapp2.RequestHandler):
 			supermarket =[]
 			dist = 0.00
 			point1 =(float(latitude), float(longitude))
-			start = str(postcode[0:4])
+			start = str(postcode[0:2])
 			logging.info(start)
 			query = Supermarket.all()
 			query.filter("postcode >=", start).filter("postcode <", start + "\uFFFD")
@@ -263,7 +263,7 @@ class lookUpSchool(webapp2.RequestHandler):
 			school =[]
 			dist = 0.00
 			point1 =(float(latitude), float(longitude))
-			start = str(postcode[0:4])
+			start = str(postcode[0:2])
 			logging.info(start)
 			query = School.all()
 			query.filter("postcode >=", start).filter("postcode <", start + "\uFFFD")
