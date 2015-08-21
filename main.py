@@ -1,7 +1,6 @@
 import logging
 import os
 import csv
-import cloudstorage as gcs
 import webapp2
 import jinja2
 import json
