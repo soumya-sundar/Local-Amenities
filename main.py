@@ -24,6 +24,7 @@ jinja_environment = jinja2.Environment(autoescape=True,
                                                                                    'templates')))
 																				   
 #Render the main page of the application
+# GAE Users service reference - https://cloud.google.com/appengine/docs/python/gettingstartedpython27/usingusers
 class MainPage(webapp2.RequestHandler):
     def get(self):
         current_user = users.get_current_user()
@@ -149,6 +150,7 @@ class lookUpGP(webapp2.RequestHandler):
 			self.response.write('\n\nThere was an error running the demo! '
 								'Please check the logs for more details.\n')
 
+# Haversine function reference - https://pypi.python.org/pypi/haversine
 # Calculate distance between two pairs of lat-lon values								
 def haversine(point1, point2):
 	# unpack latitude/longitude

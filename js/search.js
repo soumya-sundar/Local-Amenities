@@ -1,5 +1,11 @@
-//Initialise variables.
+//Leaflet functions reference - http://leafletjs.com/examples/quick-start.html
+//Images for markers reference links-
+//School - http://www.livechennai.com/images/resource.png
+//Supermarket - http://a2.mzstatic.com/us/r30/Purple6/v4/6e/14/f9/6e14f92f-fe50-d652-f0a0-56b1ff4c0037/icon180x180.jpeg
+//GP - http://www.inovaxo.fr/design/images/avantage.png
+//Train station - http://img4.wikia.nocookie.net/__cb20080418115338/uktransport/images/0/0e/National_Rail_Logo.png
 
+//Initialise variables.
 //Setting up the map.
 var map = L.map('map').setView([51.505, -0.09], 13);
 var userPostCode;
@@ -9,6 +15,7 @@ var trainSt_marker = [];
 var supermarket_marker = [];
 var school_marker = [];
 
+// Leaflet custom markers reference - http://leafletjs.com/examples/custom-icons.html
 //Custom icon for GP.
 var gpIcon = L.icon({
     iconUrl: '../img/gp.png',
