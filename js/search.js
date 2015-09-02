@@ -161,9 +161,6 @@ function lookUpGP(postcode, latitude, longitude){
 				//Call to display the GP records.
 				displayGP(response);
 			}
-			else {
-				alert("not found");
-			}
 		},
 		error: function(e) {
 			console.log(e.message);
@@ -183,9 +180,6 @@ function lookUpTrainStation(postcode, latitude, longitude){
 			if(response) {
 				//Call to display the train station records.
 				displayTrainStation(response);
-			}
-			else {
-				alert("not found");
 			}
 		},
 		error: function(e) {
@@ -207,9 +201,6 @@ function lookUpSupermarket(postcode, latitude, longitude){
 				//Call to display the supermarket records.
 				displaySupermarket(response);
 			}
-			else {
-				alert("not found");
-			}
 		},
 		error: function(e) {
 			console.log(e.message);
@@ -229,9 +220,6 @@ function lookUpSchool(postcode, latitude, longitude){
 			if(response) {
 				//Call to display the school records.
 				displaySchool(response);
-			}
-			else {
-				alert("not found");
 			}
 		},
 		error: function(e) {
